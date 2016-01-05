@@ -5,4 +5,9 @@ from src.bot import *
 from src.config.config import *
 import datetime
 
-bot = Roboraj(config).run()
+
+def main():
+    bot = Roboraj(config).run()
+
+if __name__ == "__main__":
+    main()
