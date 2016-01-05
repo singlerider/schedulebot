@@ -5,6 +5,7 @@ import time
 import sys
 from functions_general import *
 import thread
+import ssl
 
 threshold = 5 * 60  # five minutes, make this whatever you want
 
@@ -93,6 +94,7 @@ class irc:
 
     def connect(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = ssl.wrap_socket(sock)
         sock.settimeout(10)
 
         try:
