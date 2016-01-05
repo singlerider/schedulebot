@@ -4,6 +4,5 @@ src/config/config.py
 globals.py
 *.db
 *.json
-**.txt
 venv/*
 temp.py
