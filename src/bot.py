@@ -16,23 +16,14 @@ import src.lib.incoming_data as incoming_data
 import src.lib.cron as cron
 import requests
 from bs4 import BeautifulSoup
+import sys
+reload(sys)
+sys.setdefaultencoding("utf8")
 
 channel = config.channel
 print channel  # channel connecting to
-
+# we're specifically scraping the Games Done Quick Schedule
 SCHEDULE_SITE = "https://gamesdonequick.com/schedule"
-
-
-def cron_job(channel):
-    with open("changes.json", "r") as f:  # read changes.json
-        changes = json.loads(f.read())  # convert to dict
-    with open("changes.json", "w") as f:  # open changes.json
-        f.write(json.dumps({}))  # write an empty dict to file
-    # {word1: count, word2: count}
-    # list comprehension for the chat message return
-    word_list = ", ".join([x + " count: " + str(
-        changes[x] + 1) for x in changes])
-    return word_list
 
 
 class Roboraj(object):
@@ -40,10 +31,6 @@ class Roboraj(object):
     def __init__(self, config):
         self.config = config  # use config.py as this instance's config
         self.irc = irc_.irc(config)  # use irc.py for socket connections
-        #cron.initialize(
-        #    self.irc, self.config.get('channels', {}), (
-        #        10, cron_job))
-        # asyncronously check for incoming PINGs and send PONGs to server
         incoming_data.initialize(self.irc, self.config.get('channels', {}))
         self.soup = BeautifulSoup(requests.get(SCHEDULE_SITE).content, "html.parser")
         self.table = self.soup.findChildren('tbody', id='runTable')[0]
@@ -57,8 +44,37 @@ class Roboraj(object):
                 result.append(value)
             if len(result) > 3:
                 self.runs.append(result)
-        self.irc.send_message("#gaming", str(self.runs[1]))
+
 
     def run(self):
+        n = 0
+        WAIT = False
         while True:  # main event loop
-            pass
+            if n < len(self.runs):
+                current_run = self.runs[n]
+                pattern = "%Y-%m-%dT%H:%M:%SZ"
+                t = current_run[0]
+                epoch = int(time.mktime(time.strptime(t, pattern))) - 28000
+                game = unicode(current_run[1])
+                runners = unicode(current_run[2])
+                expected_time = unicode(current_run[3])
+                description = unicode(current_run[4])
+                setup_time = unicode(current_run[5])
+                if time.time() > epoch:
+                    resp = """Next up: {0}, ran by {1} \
+with an expected time of {2}. {3}. Setup time: {4}""".format(
+                        game, runners, expected_time, description.rstrip("."), setup_time)
+                    current_run = self.runs[n]
+                    n += 1
+                else:
+                    if WAIT == False:
+                        WAIT = True
+                        new_t = current_run[0]
+                        new_epoch = int(time.mktime(time.strptime(t, pattern))) - 28000
+                    while time.time() < new_epoch:
+                        pass
+                    print "time.time() > new_epoch"
+                    print resp
+                    self.irc.send_message("#gaming", resp)
+                    WAIT = False
+                    continue
