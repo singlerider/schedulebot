@@ -54,23 +54,25 @@ class Roboraj(object):
                 current_run = self.runs[n]
                 pattern = "%Y-%m-%dT%H:%M:%SZ"
                 t = current_run[0]
-                epoch = int(time.mktime(time.strptime(t, pattern))) - 28000
-                game = unicode(current_run[1])
-                runners = unicode(current_run[2])
-                expected_time = unicode(current_run[3])
-                description = unicode(current_run[4])
-                setup_time = unicode(current_run[5])
+                epoch = int(time.mktime(time.strptime(t, pattern)))
                 if time.time() > epoch:
-                    resp = """Next up: {0}, ran by {1} \
-with an expected time of {2}. {3}. Setup time: {4}""".format(
-                        game, runners, expected_time, description.rstrip("."), setup_time)
-                    current_run = self.runs[n]
                     n += 1
                 else:
                     if WAIT == False:
                         WAIT = True
+                        print self.runs[n - 1][1]
+                        current_run = self.runs[n]
                         new_t = current_run[0]
-                        new_epoch = int(time.mktime(time.strptime(t, pattern))) - 28000
+                        new_epoch = int(time.mktime(time.strptime(t, pattern)))
+                        game = unicode(current_run[1])
+                        runners = unicode(current_run[2])
+                        expected_time = unicode(current_run[3])
+                        description = unicode(current_run[4])
+                        setup_time = unicode(current_run[5])
+                        resp = """Next up: {0}, ran by {1} \
+with an expected time of {2}. {3}. Setup time: {4}""".format(
+                        game, runners, expected_time, description.rstrip("."), setup_time)
+                        print resp
                     while time.time() < new_epoch:
                         pass
                     print "time.time() > new_epoch"
