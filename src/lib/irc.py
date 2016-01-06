@@ -3,7 +3,7 @@ import socket
 import re
 import time
 import sys
-from schedulebot.src.lib.functions_general import *
+from functions_general import *
 import thread
 import ssl
 

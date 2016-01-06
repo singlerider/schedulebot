@@ -1,4 +1,4 @@
-import schedulebot.src.lib.channels as channels
+import src.lib.channels as channels
 import json
 global config
 
