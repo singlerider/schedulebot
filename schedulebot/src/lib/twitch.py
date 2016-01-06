@@ -3,7 +3,7 @@ import requests
 import json
 import random
 import datetime
-import src.lib.user_commands as user_commands_import
+import schedulebot.src.lib.user_commands as user_commands_import
 
 # making this comment from Github's Oval Office
 

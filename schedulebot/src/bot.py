@@ -9,11 +9,11 @@ import traceback
 import sched
 import time
 import os
-import src.config.config as config
+import schedulebot.src.config.config as config
 from threading import Thread
 from lib.functions_general import *
-import src.lib.incoming_data as incoming_data
-import src.lib.cron as cron
+import schedulebot.src.lib.incoming_data as incoming_data
+import schedulebot.src.lib.cron as cron
 import requests
 from bs4 import BeautifulSoup
 import sys

@@ -31,7 +31,7 @@ and your console window will be in that virtualenv state. To deactivate, run:
 To install all dependencies locally (preferably inside your activated
 virtualenv), run:
 
-`pip install -r requirements.txt`
+`pip install .`
 
 ### Further Steps
 
@@ -46,4 +46,4 @@ Head into src/config/config.py and enter the channel you'd like to join, your lo
 
 ### To run:
 
-`./serve.py`
+`schedulebot`
