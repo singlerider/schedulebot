@@ -37,7 +37,7 @@ virtualenv), run:
 
 Make a copy of the example config file:
 
-`cp schedulebot/src/config/config_example.py schedulebot/src/config/config.py`
+`cp src/config/config_example.py src/config/config.py`
 
 #### Config File
 
