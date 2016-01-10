@@ -1,6 +1,6 @@
 .DS_STORE
 *.pyc
-schedulebot/src/config/config.py
+src/config/config.py
 globals.py
 *.db
 *.json

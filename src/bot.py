@@ -25,25 +25,30 @@ print channel  # channel connecting to
 # we're specifically scraping the Games Done Quick Schedule
 SCHEDULE_SITE = "https://gamesdonequick.com/schedule"
 
+def scrape():
+    soup = BeautifulSoup(requests.get(SCHEDULE_SITE).content, "html.parser")
+    table = soup.findChildren('tbody', id='runTable')[0]
+    rows = table.findChildren(['th', 'tr'])
+    runs = []
+    for row in rows:
+        cells = row.findChildren('td')
+        result = []
+        for cell in cells:
+            value = cell.string
+            result.append(value)
+        if len(result) > 3:
+            runs.append(result)
+    return runs
+
+
 
 class Roboraj(object):
 
     def __init__(self, config):
-        self.config = config  # use config.py as this instance's config
-        self.irc = irc_.irc(config)  # use irc.py for socket connections
-        incoming_data.initialize(self.irc, self.config.get('channels', {}))
-        self.soup = BeautifulSoup(requests.get(SCHEDULE_SITE).content, "html.parser")
-        self.table = self.soup.findChildren('tbody', id='runTable')[0]
-        self.rows = self.table.findChildren(['th', 'tr'])
-        self.runs = []
-        for row in self.rows:
-            cells = row.findChildren('td')
-            result = []
-            for cell in cells:
-                value = cell.string
-                result.append(value)
-            if len(result) > 3:
-                self.runs.append(result)
+        config = config  # use config.py as this instance's config
+        irc = irc_.irc(config)  # use irc.py for socket connections
+        incoming_data.initialize(irc, config.get('channels', {}))
+        self.runs = scrape()
 
 
     def run(self):
@@ -79,4 +84,5 @@ with an expected time of {2}. {3}. Setup time: {4}""".format(
                     print resp
                     self.irc.send_message("#gaming", resp)
                     WAIT = False
+                    self.runs = scrape()
                     continue
